@@ -71,12 +71,6 @@ const AudioPlayer = () => {
   const [maxValue, setMaxValue] = useState();
 
   const uploadAudio = (e) => {
-    console.log(",aknskcnk");
-    console.log("e", e);
-    console.log(e.target.files[0]?.type, "files");
-
-    console.log(",abshbchjbsc", URL?.createObjectURL(e.target.files[0]));
-
     if (
       e.target.files[0]?.type === "video/mp4" ||
       e.target.files[0]?.type === "audio/mpeg"
@@ -94,16 +88,16 @@ const AudioPlayer = () => {
     // setDuration(seconds);
     // progressBar.current.max = seconds;
   };
-  const checkVideoOver = (sec) => {
-    console.log("sec", sec, "duration", duration);
-    // if (Number(sec) === duration) {
-    //   setIsPlaying(false);
+  // const checkVideoOver = (sec) => {
+  //   console.log("sec", sec, "duration", duration);
+  //   // if (Number(sec) === duration) {
+  //   //   setIsPlaying(false);
 
-    // }
-  };
+  //   // }
+  // };
 
   const calculateTime = (secs) => {
-    checkVideoOver(currentTime);
+    // checkVideoOver(currentTime);
     // if(sec)
     const minutes = Math.floor(secs / 60);
     const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
@@ -209,9 +203,7 @@ const AudioPlayer = () => {
       setindex(index + 1);
       console.log("listdata", listdata);
     } else {
-      // console.log("find all data", find);
       let changeIndex = find.map((data) => {
-        console.log("index", data.index, "global index", index);
         return {
           ...data,
           index: data.index !== 1 ? data.index - 1 : data.index,
@@ -233,7 +225,6 @@ const AudioPlayer = () => {
 
     if (startime < endtime && duration > startime && duration >= endtime) {
       const exist = blockList.filter((data) => {
-        console.log("data", data);
         if (
           (startime >= data?.startPosition &&
             startime <= data?.endPosition &&
@@ -280,21 +271,16 @@ const AudioPlayer = () => {
     } else {
       setMessage("Please Enter Valid Time");
     }
-
-    console.log("startime", startime, endtime);
   };
 
-  const calculateEndTime = () => {
-    console.log("kaskckn", audioPlayer?.current?.duration);
-  };
+  const calculateEndTime = () => {};
   const submtImage = () => {
     // const seconds = Math.floor(audioPlayer.current.duration);
     // setDuration(seconds);
     // progressBar.current.max = seconds;
 
     setShow(true);
-    // console.log("upload", seconds);
-    // console.log("upload", audioPlayer);
+
     // setAudio(e);
   };
 
@@ -306,15 +292,15 @@ const AudioPlayer = () => {
     }, 300);
   }, [highLightBlocks, audio, duration, show]);
 
-  useEffect(() => {
-    // setTimeout(() => {
-    //   const seconds = Math.floor(audioPlayer?.current?.duration);
-    //   setDuration(seconds);
-    //   setMaxValue(seconds);
-    // }, 300);
+  // useEffect(() => {
+  //   // setTimeout(() => {
+  //   //   const seconds = Math.floor(audioPlayer?.current?.duration);
+  //   //   setDuration(seconds);
+  //   //   setMaxValue(seconds);
+  //   // }, 300);
 
-    console.log("nakscnkn");
-  }, [audioPlayer?.current?.value]);
+  //   console.log("nakscnkn");
+  // }, [audioPlayer?.current?.value]);
 
   const forwardThirty = () => {
     progressBar.current.value = Number(progressBar.current.value + 30);
@@ -334,12 +320,20 @@ const AudioPlayer = () => {
     setCurrentTime(progressBar.current.value);
   };
   const getNewData = (e) => {
-    console.log("time", progressBar.current.value);
-    let time = 0;
-    time = Math.floor((e.clientX * duration) / 570);
-    progressBar.current.value = time - 6;
+    let time;
+    time =
+      (e.target.parentElement.offsetLeft +
+        e.target.parentElement.parentElement.offsetLeft -
+        e.screenX) /
+      (570 / duration);
+
+    progressBar.current.value = Math.abs(Math.floor(time));
+
     changeRange();
   };
+
+  // const router = useRouter();
+
   return (
     <>
       {!show && (
@@ -404,19 +398,17 @@ const AudioPlayer = () => {
                   position: "absolute",
                   top: 300,
                   width: 570,
+                  // zIndex: 10,
                 }}
                 onClick={(e) => getNewData(e)}
               >
                 <input
                   type="range"
                   className={styles.progressBar}
-                  defaultValue="0"
+                  defaultValue={0}
                   ref={progressBar}
                   max={maxValue}
-                  onChange={changeRange}
-                  style={{
-                    pointerEvents: "none",
-                  }}
+                  style={{ pointerEvents: "none" }}
                 />
                 <div className={styles.seekBar}>
                   {highLightBlocks?.map((data, index) => (
