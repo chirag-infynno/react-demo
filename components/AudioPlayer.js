@@ -79,7 +79,7 @@ const AudioPlayer = () => {
       setAudio(URL?.createObjectURL(e.target.files[0]));
       setMessage("");
     } else {
-      setMessage("Please Upload Audio/Video file ");
+      setMessage("Please Upload Audio/Video File ");
       setAudio();
     }
 
@@ -201,7 +201,7 @@ const AudioPlayer = () => {
       });
       setHighLightBlocks([...listdata, ...highLightBlocks]);
       setindex(index + 1);
-      console.log("listdata", listdata);
+      // console.log("listdata", listdata);
     } else {
       let changeIndex = find.map((data) => {
         return {
@@ -319,20 +319,38 @@ const AudioPlayer = () => {
     );
     setCurrentTime(progressBar.current.value);
   };
-  const getNewData = (e) => {
+  const moveTo = (e) => {
+    console.log(e);
+    console.log(
+      "asll",
+      e.target.parentElement.offsetLeft,
+      e.target.parentElement.parentElement.offsetLeft,
+      e.screenX
+    );
+
     let time;
     time =
       (e.target.parentElement.offsetLeft +
         e.target.parentElement.parentElement.offsetLeft -
-        e.screenX) /
+        e.clientX) /
       (570 / duration);
-
     progressBar.current.value = Math.abs(Math.floor(time));
+    console.log("time", time);
 
     changeRange();
   };
 
-  // const router = useRouter();
+  const suuget = (e) => {
+    e.stopPropagation();
+    let time;
+    time =
+      (e.target.parentElement.parentElement.offsetLeft +
+        e.target.parentElement.parentElement.parentElement.offsetLeft -
+        e.clientX) /
+      (570 / duration);
+    progressBar.current.value = Math.abs(Math.floor(time));
+    changeRange();
+  };
 
   return (
     <>
@@ -342,10 +360,7 @@ const AudioPlayer = () => {
           {message && (
             <div
               style={{
-                // position: "absolute",
                 color: "red",
-                // top: "50px",
-                // left: 50,
                 marginTop: 10,
                 marginBottom: 5,
               }}
@@ -353,17 +368,25 @@ const AudioPlayer = () => {
               {message}
             </div>
           )}
-          <input type="file" onChange={uploadAudio} />
+          <input
+            type="file"
+            style={{
+              marginTop: 10,
+            }}
+            onChange={uploadAudio}
+          />
 
           {audio && (
-            <button
-              onClick={submtImage}
-              // style={{
-              //   opacity: show ? 100 : 24,
-              // }}
-            >
-              Upload Audio/Video
-            </button>
+            <div>
+              <button
+                onClick={submtImage}
+                style={{
+                  marginTop: 10,
+                }}
+              >
+                Upload Audio/Video
+              </button>
+            </div>
           )}
         </div>
       )}
@@ -398,9 +421,9 @@ const AudioPlayer = () => {
                   position: "absolute",
                   top: 300,
                   width: 570,
-                  // zIndex: 10,
+                  cursor: "pointer",
                 }}
-                onClick={(e) => getNewData(e)}
+                onClick={(e) => moveTo(e)}
               >
                 <input
                   type="range"
@@ -408,7 +431,6 @@ const AudioPlayer = () => {
                   defaultValue={0}
                   ref={progressBar}
                   max={maxValue}
-                  style={{ pointerEvents: "none" }}
                 />
                 <div className={styles.seekBar}>
                   {highLightBlocks?.map((data, index) => (
@@ -423,7 +445,10 @@ const AudioPlayer = () => {
                         position: "absolute",
                         opacity: 0.7,
                         zIndex: data.index,
+                        cursor: "pointer",
                       }}
+                      onClick={(e) => suuget(e)}
+                      // onClick={}
                     ></div>
                   ))}
                 </div>
@@ -431,6 +456,17 @@ const AudioPlayer = () => {
             </div>
 
             <div className={styles.buttonlist}>
+              <button
+                style={{
+                  backgroundColor: "#FF00FF",
+                }}
+                className={styles.buttonStyle}
+                onClick={() => {
+                  getBlockPositions({ id: 4 });
+                }}
+              >
+                Call To Action
+              </button>
               <button
                 style={{
                   backgroundColor: "#FF0000",
@@ -459,6 +495,16 @@ const AudioPlayer = () => {
                 onClick={() => getBlockPositions({ id: 3 })}
               >
                 Need Review
+              </button>
+
+              <button
+                className={styles.buttonStyle}
+                style={{
+                  backgroundColor: "#40E0D0",
+                }}
+                onClick={() => getBlockPositions({ id: 5 })}
+              >
+                Insight
               </button>
             </div>
           </div>
@@ -650,6 +696,23 @@ const AudioPlayer = () => {
               >
                 <button
                   style={{
+                    backgroundColor: "#FF00FF",
+                  }}
+                  className={styles.buttonStyle}
+                  onClick={() =>
+                    addExercises({
+                      id: 4,
+                      color: "#FF00FF",
+                      message: "Call To Action",
+                      action: "callToAction",
+                    })
+                  }
+                >
+                  Add Call To Action Time
+                </button>
+
+                <button
+                  style={{
                     backgroundColor: "#FF0000",
                   }}
                   className={styles.buttonStyle}
@@ -695,6 +758,23 @@ const AudioPlayer = () => {
                   }
                 >
                   Add Need Review Time
+                </button>
+
+                <button
+                  style={{
+                    backgroundColor: "#40E0D0",
+                  }}
+                  className={styles.buttonStyle}
+                  onClick={() =>
+                    addExercises({
+                      id: 5,
+                      color: "#40E0D0",
+                      message: "Insight Time",
+                      action: "Insight ",
+                    })
+                  }
+                >
+                  Add Insight Time
                 </button>
               </div>
             </div>
